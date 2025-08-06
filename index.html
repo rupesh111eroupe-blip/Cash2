@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cash App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+        
+        body {
+            background-color: #f3f3f3;
+            color: #222;
+            line-height: 1.5;
+        }
+        
+        .cash-app {
+            max-width: 430px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 30px rgba(0,0,0,0.1);
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        .header {
+            background-color: #00D54B;
+            color: white;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .header h1 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .balance-container {
+            background-color: #00D54B;
+            color: white;
+            padding: 24px 16px;
+            margin-bottom: 16px;
+        }
+        
+        .balance-amount {
+            font-size: 32px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-around;
+            padding: 16px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .nav-button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .nav-icon {
+            background-color: #00D54B;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            font-size: 24px;
+        }
+        
+        .nav-label {
+            font-size: 14px;
+            color: #555;
+        }
+        
+        .activity {
+            padding: 16px;
+        }
+        
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        
+        .activity-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .activity-item {
+            display: flex;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+        }
+        
+        .activity-details {
+            flex: 1;
+        }
+        
+        .activity-top {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .activity-name {
+            font-weight: 600;
+        }
+        
+        .activity-amount {
+            font-weight: 600;
+        }
+        
+        .activity-positive {
+            color: #00D54B;
+        }
+        
+        .activity-bottom {
+            font-size: 14px;
+            color: #888;
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            display: none;
+        }
+        
+        .payment-modal {
+            background-color: white;
+            width: 90%;
+            max-width: 400px;
+            border-radius: 12px;
+            overflow: hidden;
+            animation: slideUp 0.3s ease;
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .modal-header {
+            padding: 16px;
+            border-bottom: 1px solid #eee;
+            text-align: center;
+            position: relative;
+        }
+        
+        .modal-close {
+            position: absolute;
+            left: 16px;
+            top: 16px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .modal-body {
+            padding: 16px;
+        }
+        
+        .input-group {
+            margin-bottom: 16px;
+        }
+        
+        .input-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .pay-button {
+            background-color: #00D54B;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+        
+        .receipt {
+            text-align: center;
+            padding: 24px;
+            display: none;
+        }
+        
+        .receipt-icon {
+            color: #00D54B;
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+        
+        .receipt-title {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+        
+        .receipt-details {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+        
+        .receipt-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+        }
+        
+        .receipt-label {
+            color: #555;
+        }
+        
+        .receipt-value {
+            font-weight: 600;
+        }
+        
+        .done-button {
+            background-color: #00D54B;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        
+        .login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 24px;
+            z-index: 1000;
+        }
+        
+        .login-logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        
+        .login-logo-text {
+            color: #00D54B;
+            font-size: 32px;
+            font-weight: bold;
+            letter-spacing: -1px;
+        }
+        
+        .login-input {
+            margin-bottom: 16px;
+        }
+        
+        .login-button {
+            background-color: #00D54B;
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 8px;
+            width: 100%;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 24px;
+        }
+        
+        .footer-note {
+            text-align: center;
+            padding: 16px;
+            font-size: 12px;
+            color: #888;
+        }
+        
+        /* Animation classes */
+        .processing {
+            animation: processing 1.5s infinite;
+        }
+        
+        @keyframes processing {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-screen" id="loginScreen">
+        <div class="login-logo">
+            <div class="login-logo-text">cash</div>
+            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/1533fb57-62d8-4b1b-be7e-3fa95e05818c.png" alt="Cash App logo with dollar sign on green background" style="width: 80px; height: 80px; margin: 10px auto; border-radius: 50%; background-color: #00D54B; color: white; display: flex; align-items: center; justify-content: center; font-size: 40px; font-weight: bold;" />
+        </div>
+        
+        <div class="login-input">
+            <label for="phone">Phone, email, or username</label>
+            <input type="text" id="phone" class="input-field" placeholder="Phone, email, or username">
+        </div>
+        
+        <div class="login-input">
+            <label for="password">Password</label>
+            <input type="password" id="password" class="input-field" placeholder="Password">
+        </div>
+        
+        <button class="login-button" id="loginButton">Sign In</button>
+        
+        <div style="text-align: center; margin-top: 16px;">
+            <a href="#" style="color: #00D54B; text-decoration: none;">Forgot password?</a>
+        </div>
+        
+        <div class="footer-note">
+            This is a simulated Cash App interface for demonstration purposes only. No actual payments are processed or received.
+        </div>
+    </div>
+    
+    <div class="cash-app" id="cashApp" style="display: none;">
+        <div class="header">
+            <h1>$1,287.50</h1>
+            <div style="font-size: 20px;">⚙️</div>
+        </div>
+        
+        <div class="balance-container">
+            <div style="font-size: 14px; opacity: 0.9;">Your balance</div>
+            <div class="balance-amount">$1,287.50</div>
+        </div>
+        
+        <div class="nav-buttons">
+            <div class="nav-button">
+                <div class="nav-icon">⬆️</div>
+                <div class="nav-label">Send</div>
+            </div>
+            <div class="nav-button">
+                <div class="nav-icon">⬇️</div>
+                <div class="nav-label">Request</div>
+            </div>
+            <div class="nav-button">
+                <div class="nav-icon">🏦</div>
+                <div class="nav-label">Bank</div>
+            </div>
+            <div class="nav-button">
+                <div class="nav-icon">💳</div>
+                <div class="nav-label">Card</div>
+            </div>
+        </div>
+        
+        <div class="activity">
+            <div class="activity-header">
+                <div class="activity-title">Activity</div>
+                <div style="color: #00D54B;">See All</div>
+            </div>
+            
+            <div class="activity-item">
+                <div class="activity-icon">JS</div>
+                <div class="activity-details">
+                    <div class="activity-top">
+                        <div class="activity-name">John Smith</div>
+                        <div class="activity-amount activity-positive">+$250.00</div>
+                    </div>
+                    <div class="activity-bottom">Today · 2:45 PM</div>
+                </div>
+            </div>
+            
+            <div class="activity-item">
+                <div class="activity-icon">AM</div>
+                <div class="activity-details">
+                    <div class="activity-top">
+                        <div class="activity-name">Amazon</div>
+                        <div class="activity-amount">-$54.29</div>
+                    </div>
+                    <div class="activity-bottom">Yesterday · 11:23 AM</div>
+                </div>
+            </div>
+            
+            <div class="activity-item">
+                <div class="activity-icon">SB</div>
+                <div class="activity-details">
+                    <div class="activity-top">
+                        <div class="activity-name">Starbucks</div>
+                        <div class="activity-amount">-$7.85</div>
+                    </div>
+                    <div class="activity-bottom">Yesterday · 8:45 AM</div>
+                </div>
+            </div>
+            
+            <div class="activity-item">
+                <div class="activity-icon">MS</div>
+                <div class="activity-details">
+                    <div class="activity-top">
+                        <div class="activity-name">Mary Smith</div>
+                        <div class="activity-amount activity-positive">+$30.00</div>
+                    </div>
+                    <div class="activity-bottom">2 days ago · 4:20 PM</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="overlay" id="paymentOverlay">
+        <div class="payment-modal" id="paymentModal">
+            <div class="modal-header">
+                <div class="modal-close" id="modalClose">✕</div>
+                <h2>Pay</h2>
+            </div>
+            <div class="modal-body">
+                <div class="input-group">
+                    <label class="input-label">To</label>
+                    <input type="text" class="input-field" id="recipient" placeholder="$cashtag, phone, email">
+                </div>
+                
+                <div class="input-group">
+                    <label class="input-label">Amount</label>
+                    <input type="text" class="input-field" id="amount" placeholder="$0.00">
+                </div>
+                
+                <div class="input-group">
+                    <label class="input-label">For</label>
+                    <input type="text" class="input-field" id="note" placeholder="Dinner, rent, etc.">
+                </div>
+                
+                <button class="pay-button" id="payButton">Pay</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="overlay" id="receiptOverlay">
+        <div class="payment-modal">
+            <div class="receipt" id="receipt">
+                <div class="receipt-icon">✓</div>
+                <div class="receipt-title">Payment Sent</div>
+                
+                <div class="receipt-details">
+                    <div class="receipt-row">
+                        <div class="receipt-label">To</div>
+                        <div class="receipt-value" id="receiptRecipient">John Doe</div>
+                    </div>
+                    <div class="receipt-row">
+                        <div class="receipt-label">Amount</div>
+                        <div class="receipt-value" id="receiptAmount">$50.00</div>
+                    </div>
+                    <div class="receipt-row">
+                        <div class="receipt-label">Note</div>
+                        <div class="receipt-value" id="receiptNote">Dinner</div>
+                    </div>
+                    <div class="receipt-row">
+                        <div class="receipt-label">Date</div>
+                        <div class="receipt-value" id="receiptDate">Today · 3:15 PM</div>
+                    </div>
+                </div>
+                
+                <button class="done-button" id="doneButton">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Login functionality
+            const loginButton = document.getElementById('loginButton');
+            const loginScreen = document.getElementById('loginScreen');
+            const cashApp = document.getElementById('cashApp');
+            
+            loginButton.addEventListener('click', function() {
+                loginScreen.style.display = 'none';
+                cashApp.style.display = 'block';
+            });
+            
+            // Payment modal functionality
+            const sendButtons = document.querySelectorAll('.nav-button:nth-child(1)');
+            const paymentOverlay = document.getElementById('paymentOverlay');
+            const modalClose = document.getElementById('modalClose');
+            const paymentModal = document.getElementById('paymentModal');
+            const payButton = document.getElementById('payButton');
+            const receiptOverlay = document.getElementById('receiptOverlay');
+            const receipt = document.getElementById('receipt');
+            const doneButton = document.getElementById('doneButton');
+            
+            sendButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    paymentOverlay.style.display = 'flex';
+                });
+            });
+            
+            modalClose.addEventListener('click', function() {
+                paymentOverlay.style.display = 'none';
+            });
+            
+            payButton.addEventListener('click', function() {
+                const recipient = document.getElementById('recipient').value || 'John Doe';
+                const amount = document.getElementById('amount').value || '$50.00';
+                const note = document.getElementById('note').value || 'Dinner';
+                
+                // Simulate payment processing
+                payButton.classList.add('processing');
+                payButton.textContent = 'Processing...';
+                payButton.disabled = true;
+                
+                setTimeout(function() {
+                    paymentOverlay.style.display = 'none';
+                    payButton.classList.remove('processing');
+                    payButton.textContent = 'Pay';
+                    payButton.disabled = false;
+                    
+                    // Show receipt
+                    document.getElementById('receiptRecipient').textContent = recipient;
+                    document.getElementById('receiptAmount').textContent = amount;
+                    document.getElementById('receiptNote').textContent = note;
+                    
+                    const now = new Date();
+                    const hours = now.getHours();
+                    const minutes = now.getMinutes();
+                    const ampm = hours >= 12 ? 'PM' : 'AM';
+                    const formattedHours = hours % 12 || 12;
+                    const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+                    document.getElementById('receiptDate').textContent = 
+                        `Today · ${formattedHours}:${formattedMinutes} ${ampm}`;
+                    
+                    receipt.style.display = 'block';
+                    receiptOverlay.style.display = 'flex';
+                    
+                    // Add to activity
+                    const today = new Date();
+                    const timeString = today.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    
+                    const activityContainer = document.querySelector('.activity');
+                    const newActivity = document.createElement('div');
+                    newActivity.className = 'activity-item';
+                    newActivity.innerHTML = `
+                        <div class="activity-icon">${recipient.charAt(0).toUpperCase()}</div>
+                        <div class="activity-details">
+                            <div class="activity-top">
+                                <div class="activity-name">${recipient.split('@')[0]}</div>
+                                <div class="activity-amount" style="color: #000;">-${amount}</div>
+                            </div>
+                            <div class="activity-bottom">Today · ${timeString}</div>
+                        </div>
+                    `;
+                    
+                    activityContainer.insertBefore(newActivity, activityContainer.firstChild.nextSibling.nextSibling);
+                    
+                    // Update balance
+                    const balanceElement = document.querySelector('.balance-amount');
+                    const currentBalance = parseFloat(balanceElement.textContent.replace('$', '').replace(',', ''));
+                    const paymentAmount = parseFloat(amount.replace('$', '').replace(',', ''));
+                    const newBalance = currentBalance - paymentAmount;
+                    balanceElement.textContent = '$' + newBalance.toFixed(2);
+                }, 2000);
+            });
+            
+            doneButton.addEventListener('click', function() {
+                receiptOverlay.style.display = 'none';
+                receipt.style.display = 'none';
+            });
+            
+            // Close overlays when clicking outside
+            paymentOverlay.addEventListener('click', function(e) {
+                if (e.target === paymentOverlay) {
+                    paymentOverlay.style.display = 'none';
+                }
+            });
+            
+            receiptOverlay.addEventListener('click', function(e) {
+                if (e.target === receiptOverlay) {
+                    receiptOverlay.style.display = 'none';
+                    receipt.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
